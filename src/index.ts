@@ -22,15 +22,14 @@ const main = async () => {
 
     const targetColumnIndex = headers.length - 1
 
-    const targetValues = lines
-      .map((v) => v[targetColumnIndex])
-      .reduce<{
-        [key: string]: number
-      }>((previousValue, currentValue, currentIndex, array) => {
-        previousValue[currentValue] = (previousValue[currentValue] ?? 0) + 1
+    const targetValues = lines.reduce<{
+      [key: string]: number
+    }>((previousValue, currentValue, currentIndex, array) => {
+      const value = currentValue[targetColumnIndex]
+      previousValue[value] = (previousValue[value] ?? 0) + 1
 
-        return previousValue
-      }, {})
+      return previousValue
+    }, {})
 
     const entries = Object.entries(targetValues)
 
@@ -49,15 +48,14 @@ const main = async () => {
           return
         }
 
-        const valuesAbsoluteFrequencyMap = lines
-          .map((v2) => v2[headerIndex])
-          .reduce<{
-            [key: string]: number
-          }>((previousValue, currentValue, currentIndex, array) => {
-            previousValue[currentValue] = (previousValue[currentValue] ?? 0) + 1
+        const valuesAbsoluteFrequencyMap = lines.reduce<{
+          [key: string]: number
+        }>((previousValue, currentValue, currentIndex, array) => {
+          const value = currentValue[headerIndex]
+          previousValue[value] = (previousValue[value] ?? 0) + 1
 
-            return previousValue
-          }, {})
+          return previousValue
+        }, {})
 
         const data = Object.entries(valuesAbsoluteFrequencyMap).map(
           (valueLabelEntry) => {
@@ -65,16 +63,14 @@ const main = async () => {
             const absoluteFrequency = valueLabelEntry[1]
             const relativeFrequency = absoluteFrequency / lines.length
 
-            const ones = lines.filter(
-              (f) =>
-                f[headerIndex] === valueLabel &&
-                f[targetColumnIndex] === entries[0][0]
+            const potential = lines.filter((f) => f[headerIndex] === valueLabel)
+
+            const ones = potential.filter(
+              (f) => f[targetColumnIndex] === entries[0][0]
             ).length
 
-            const twos = lines.filter(
-              (f) =>
-                f[headerIndex] === valueLabel &&
-                f[targetColumnIndex] === entries[1][0]
+            const twos = potential.filter(
+              (f) => f[targetColumnIndex] === entries[1][0]
             ).length
 
             const localEntropy =
@@ -116,9 +112,7 @@ const main = async () => {
 
     const now = Date.now()
 
-    console.info(now - then)
-
-    // console.info(messages.join('\n'))
+    console.info(`This run took ${now - then}ms.`)
 
     console.info('Finished.')
   } catch (err) {
