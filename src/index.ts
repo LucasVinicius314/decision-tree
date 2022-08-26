@@ -4,6 +4,8 @@ import { filePath, skipColumnLabels } from './utils/config'
 
 import { entropy } from './utils/utils'
 
+const times: number[] = []
+
 const main = async () => {
   const then = Date.now()
 
@@ -85,9 +87,12 @@ const main = async () => {
           }
         )
 
-        const entropySum = data
-          .map((v) => v.localEntropy)
-          .reduce((a, b) => a + b)
+        const entropySum = data.reduce(
+          (previousValue, currentValue, currentIndex, array) =>
+            previousValue + currentValue.localEntropy,
+          0
+        )
+
         const gain = maxEntropy - entropySum
 
         console.log(
@@ -101,8 +106,8 @@ const main = async () => {
           gain,
         }
       })
-      .sort((a, b) => (b?.gain ?? 0) - (a?.gain ?? 0))
       .filter((f) => f?.headerLabel !== headers[targetColumnIndex])
+      .sort((a, b) => (b?.gain ?? 0) - (a?.gain ?? 0))
 
     console.log(columnGains)
 
@@ -111,6 +116,8 @@ const main = async () => {
     console.info(targetColumn)
 
     const now = Date.now()
+
+    times.push(now - then)
 
     console.info(`This run took ${now - then}ms.`)
 
@@ -121,3 +128,28 @@ const main = async () => {
 }
 
 main()
+main()
+main()
+main()
+main()
+main()
+main()
+main()
+main()
+main()
+main()
+main()
+main()
+main()
+main()
+main()
+main()
+main()
+main()
+main()
+
+console.info(
+  `All runs took an average of ${
+    times.reduce((a, b) => a + b) / times.length
+  }ms.`
+)
