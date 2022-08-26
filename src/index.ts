@@ -24,6 +24,8 @@ const main = async () => {
 
     const targetColumnIndex = headers.length - 1
 
+    const targetHeader = headers[targetColumnIndex]
+
     const targetValues = lines.reduce<{
       [key: string]: number
     }>((previousValue, currentValue, currentIndex, array) => {
@@ -51,10 +53,12 @@ const main = async () => {
         }
 
         const valuesAbsoluteFrequencyMap = lines.reduce<{
-          [key: string]: number
+          [key: string]: string[][]
         }>((previousValue, currentValue, currentIndex, array) => {
           const value = currentValue[headerIndex]
-          previousValue[value] = (previousValue[value] ?? 0) + 1
+
+          previousValue[value] ??= []
+          previousValue[value].push(currentValue)
 
           return previousValue
         }, {})
@@ -62,17 +66,21 @@ const main = async () => {
         const data = Object.entries(valuesAbsoluteFrequencyMap).map(
           (valueLabelEntry) => {
             const valueLabel = valueLabelEntry[0]
-            const absoluteFrequency = valueLabelEntry[1]
+            const lines = valueLabelEntry[1]
+
+            const absoluteFrequency = lines.length
             const relativeFrequency = absoluteFrequency / lines.length
 
-            const potential = lines.filter((f) => f[headerIndex] === valueLabel)
+            const one = entries[0][0]
 
-            const ones = potential.filter(
-              (f) => f[targetColumnIndex] === entries[0][0]
+            const ones = lines.filter(
+              (f) => f[targetColumnIndex] === one
             ).length
 
-            const twos = potential.filter(
-              (f) => f[targetColumnIndex] === entries[1][0]
+            const two = entries[1][0]
+
+            const twos = lines.filter(
+              (f) => f[targetColumnIndex] === two
             ).length
 
             const localEntropy =
@@ -106,7 +114,7 @@ const main = async () => {
           gain,
         }
       })
-      .filter((f) => f?.headerLabel !== headers[targetColumnIndex])
+      .filter((f) => f?.headerLabel !== targetHeader)
       .sort((a, b) => (b?.gain ?? 0) - (a?.gain ?? 0))
 
     console.log(columnGains)
@@ -127,26 +135,11 @@ const main = async () => {
   }
 }
 
-main()
-main()
-main()
-main()
-main()
-main()
-main()
-main()
-main()
-main()
-main()
-main()
-main()
-main()
-main()
-main()
-main()
-main()
-main()
-main()
+let count = -1
+
+while (++count < 1) {
+  main()
+}
 
 console.info(
   `All runs took an average of ${
