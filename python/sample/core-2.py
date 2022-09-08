@@ -15,7 +15,7 @@ def numeric_transform(data: DataFrame, columns: list[str]) -> DataFrame:
   return data
 
 # Data input.
-data = read_csv('input/main.csv', sep=',').drop('Exemplo', axis=1)
+data = read_csv('input/main-2.csv', sep=',')
 
 # Printing the data that will be worked on.
 print(data.to_string)
@@ -24,27 +24,21 @@ print(data.to_string)
 numeric_data = numeric_transform(
   data, 
   [
-    'Alternativo', 
-    'Bar',
-    'Sex/Sab',
-    'fome',
-    'Chuva',
-    'Res',
+    'Windy',
   ]
-).drop('conc', axis=1)
+).drop('Play', axis=1)
 
 treated_data = get_dummies(
   numeric_data, 
   [
-    'Cliente',
-    'Preço',
-    'Tipo',
-    'Tempo',
+    'Outlook',
+    'Temperature',
+    'Humidity',
   ]
 )
 
 # Map data into x and y.
-x, y = treated_data, data['conc']
+x, y = treated_data, data['Play']
 
 # Training the main classifier.
 classifier = DecisionTreeClassifier(criterion='entropy')
@@ -57,7 +51,7 @@ graphviz.Source(
     out_file=None,
     feature_names=list(treated_data.columns.values), 
   )
-).render('output/main')
+).render('output/main-2')
 
 ###############
 
@@ -114,4 +108,4 @@ graphviz.Source(
     out_file=None,
     feature_names=list(treated_data.columns.values), 
   )
-).render('output/main-test')
+).render('output/main-2-test')
